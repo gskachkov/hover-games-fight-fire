@@ -1,0 +1,31 @@
+gst-launch-1.0 multifilesrc location=test_2020_8.avi ! decodebin ! xvimagesink
+
+
+ gst-launch-1.0 multifilesrc location=/home/alex/fly/video_4.avi ! decodebin ! videoscale method=0 add-borders=false ! video/x-raw, width=640, height=320 ! videoconvert ! jpegenc ! avimux ! filesink location=test_2020_4.avi
+
+
+xport GSCAM_CONFIG=" multifilesrc location=/home/alex/fly/video_5.avi loop=true ! decodebin ! videoscale method=0 add-borders=false ! video/x-raw, width=1920, height=1080 ! videoconvert"
+rosrun gscam gscam _frame_id:=/camera_link frame_id:=/camera_link
+
+
+rviz -d ./redtail/ros/packages/redtail_debug/rviz/ap.rviz 
+rosrun holder  listener.py
+
+roslaunch redtail_debug ap_gscam_trailnet_yolo_robot_4.launch 
+
+
+rosrun mavros mavsafety arm 
+rosrun mavros mavcmd takeoffcur 0 0 3
+
+roslaunch mavros px4.launch fcu_url:="/dev/ttyACM0:115200" gsc_url:="192.168.1.144"
+
+rosrun mavros mavsys mode -c STABILIZED
+
+rosrun holder px4_controller.py
+
+
+rosrun px4_controller px4_controller_node _altitude_gain:=2
+
+gst-launch-1.0 multifilesrc location=/home/alex/fly/test_2020_8.avi ! decodebin !
+
+export GSCAM_CONFIG=" filesrc location=/home/alex/fly/test_2020_8.avi ! decodebin  ! tee name=t ! queue ! videoconvert ! xvimagesink t. ! queue ! videoconvert"
