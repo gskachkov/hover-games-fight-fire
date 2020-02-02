@@ -21,7 +21,9 @@ roslaunch mavros px4.launch fcu_url:="/dev/ttyACM0:115200" gsc_url:="192.168.1.1
 
 rosrun mavros mavsys mode -c STABILIZED
 
-rosrun holder px4_controller.py
+rosrun holder rc_px4_controller.py
+
+rosrun holder rc_holders_controller.py
 
 
 rosrun px4_controller px4_controller_node _altitude_gain:=2
